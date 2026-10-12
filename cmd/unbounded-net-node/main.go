@@ -21,7 +21,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/client-go/dynamic"
-	"k8s.io/client-go/dynamic/dynamicinformer"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
@@ -808,7 +807,7 @@ func run(cfg *config) (resultErr error) {
 	// Keep topology discovery informers running for the process lifetime.
 	// Gateway-specific informers are managed separately and only run while the
 	// pinned role or a direct assignment for this Site requires them.
-	informerFactory := dynamicinformer.NewDynamicSharedInformerFactory(dynamicClient, cfg.InformerResyncPeriod)
+	informerFactory := newNodeDynamicInformerFactory(dynamicClient, cfg.InformerResyncPeriod)
 	sliceInformer := informerFactory.ForResource(siteNodeSliceGVR).Informer()
 	siteInformer := informerFactory.ForResource(siteGVR).Informer()
 	sitePeeringInformer := informerFactory.ForResource(sitePeeringGVR).Informer()
